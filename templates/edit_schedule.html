@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Schedule</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+}
+
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1b5e20;
+    color: white;
+    position: fixed;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background: #2e7d32;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 600px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-save {
+    background: #1976d2;
+}
+
+.btn-cancel {
+    background: #777;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Waste Admin</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/add_schedule">Add Schedule</a>
+    <a href="/announcements">Send Announcement</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+    <div class="card">
+        <h2>Edit Schedule</h2>
+
+        <form method="POST">
+
+            <label>Barangay</label>
+            <select name="barangay_id" required>
+                {% for b in barangays %}
+                    <option value="{{ b.id }}"
+                        {% if b.id == schedule.barangay_id %}selected{% endif %}>
+                        {{ b.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label>Collection Date</label>
+            <input type="date" name="collection_date"
+                   value="{{ schedule.collection_date }}" required>
+
+            <label>Collection Time</label>
+            <input type="time" name="collection_time"
+                   value="{{ schedule.collection_time }}" required>
+
+            <label>Waste Type</label>
+            <input type="text" name="waste_type"
+                   value="{{ schedule.waste_type }}">
+
+            <label>Notes</label>
+            <textarea name="notes">{{ schedule.notes }}</textarea>
+
+            <label>Status</label>
+            <select name="status">
+                <option value="scheduled"
+                    {% if schedule.status == 'scheduled' %}selected{% endif %}>
+                    Scheduled
+                </option>
+                <option value="done"
+                    {% if schedule.status == 'done' %}selected{% endif %}>
+                    Done
+                </option>
+            </select>
+
+            <button type="submit" class="btn-save">Update Schedule</button>
+            <a href="/dashboard">
+                <button type="button" class="btn-cancel">Cancel</button>
+            </a>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

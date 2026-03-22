@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Announcements</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+}
+
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1b5e20;
+    color: white;
+    position: fixed;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background: #2e7d32;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 750px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    background: #1976d2;
+}
+
+button:hover {
+    opacity: 0.92;
+}
+
+.announcement-item {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    max-width: 750px;
+}
+
+.date {
+    font-size: 12px;
+    color: gray;
+    margin-top: 8px;
+}
+
+.badge {
+    display: inline-block;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #e8f5e9;
+    color: #1b5e20;
+    margin: 8px 0 12px 0;
+}
+
+.small-note {
+    font-size: 12px;
+    color: #666;
+    margin-top: -8px;
+    margin-bottom: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2>Waste Collection Management System</h2>
+
+    <a href="/dashboard">Dashboard</a>
+    <a href="/add_schedule">Add Schedule</a>
+    <a href="/announcements">Send Announcement</a>
+    <a href="/manage_residents">Residents</a>
+    <a href="/manage_admin">Admin</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+
+    <!-- SEND ANNOUNCEMENT -->
+    <div class="card">
+        <h2>Send Announcement</h2>
+
+        <form method="POST">
+            <label>Target</label>
+            <!-- ✅ Empty value = broadcast to all (recommended for backend) -->
+            <select name="target_barangay_id">
+                <option value="">Broadcast to All Barangays</option>
+                {% for b in barangays %}
+                    <option value="{{ b.id }}">Send to: {{ b.name }}</option>
+                {% endfor %}
+            </select>
+            <div class="small-note">
+                Choose “Broadcast” to notify all residents, or select a barangay for targeted alerts.
+            </div>
+
+            <label>Title</label>
+            <input type="text" name="title" placeholder="e.g., Collection Advisory" required>
+
+            <label>Message</label>
+            <textarea name="message" rows="4" placeholder="Type your announcement..." required></textarea>
+
+            <button type="submit">Send Announcement</button>
+        </form>
+    </div>
+
+    <!-- LIST ANNOUNCEMENTS -->
+    <h2>Previous Announcements</h2>
+
+    {% for a in announcements %}
+        <div class="announcement-item">
+            <h3 style="margin:0;">{{ a.title }}</h3>
+
+            {% if a.target_barangay_id %}
+                <div class="badge">Target: {{ a.target_barangay_name }}</div>
+            {% else %}
+                <div class="badge">Target: All Barangays</div>
+            {% endif %}
+
+            <p style="margin:0 0 8px 0;">{{ a.message }}</p>
+            <div class="date">{{ a.created_at }}</div>
+        </div>
+    {% else %}
+        <p>No announcements yet.</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

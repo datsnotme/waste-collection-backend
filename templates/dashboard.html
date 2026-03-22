@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+/* ================= GENERAL ================= */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f9;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1b5e20;
+    color: white;
+    position: fixed;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    background: #2e7d32;
+}
+
+/* ================= CONTENT ================= */
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+/* ================= HEADER ================= */
+.header {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ================= CARDS ================= */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table th {
+    background: #2e7d32;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.badge-scheduled { background: #2e7d32; }
+.badge-done { background: #616161; }
+
+/* ================= ACTION BUTTONS ================= */
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-edit { background: #1976d2; }
+.btn-done { background: #388e3c; }
+.btn-delete { background: #d32f2f; }
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* keep forms inline */
+.inline-form {
+    display: inline;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+<div class="sidebar">
+    <h2>Waste Collection Management System</h2>
+
+    <a href="/dashboard">Dashboard</a>
+    <a href="/add_schedule">Add Schedule</a>
+    <a href="/announcements">Send Announcement</a>
+    <a href="/manage_residents">Residents</a>
+    <a href="/manage_admin">Admin</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="main">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h2>Welcome, {{ admin }}</h2>
+        <span>{{ schedules|length }} Total Records</span>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="cards">
+
+    <div class="card">
+        <h3>Total Residents</h3>
+        <h1>{{ total_residents }}</h1>
+        <p style="color: gray;">Registered mobile users</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Barangays</h3>
+        <h1>{{ total_barangays }}</h1>
+        <p style="color: gray;">Covered locations</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Schedules</h3>
+        <h1>{{ total_schedules }}</h1>
+        <p style="color: gray;">All schedules stored</p>
+    </div>
+
+    <div class="card">
+        <h3>Active (Scheduled)</h3>
+        <h1 style="color:#2e7d32;">{{ total_scheduled }}</h1>
+        <p class="badge">Running</p>
+    </div>
+
+    <div class="card">
+        <h3>Done / Completed</h3>
+        <h1 style="color:#1565c0;">{{ total_done }}</h1>
+        <p style="color: gray;">Marked as done</p>
+    </div>
+
+    <div class="card">
+        <h3>Announcements</h3>
+        <h1>{{ total_announcements }}</h1>
+        <p style="color: gray;">Sent to residents</p>
+    </div>
+
+</div>
+
+    <!-- SCHEDULE TABLE -->
+    <h2>Collection Schedule</h2>
+
+    <table>
+        <tr>
+            <th>Barangay</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Waste Type</th>
+            <th>Notes</th>
+            <th>Status</th>
+            <th>Manage</th>
+        </tr>
+
+        {% for s in schedules %}
+        <tr>
+            <td>{{ s.barangay_name }}</td>
+            <td>{{ s.collection_date }}</td>
+            <td>{{ s.collection_time }}</td>
+            <td>{{ s.waste_type }}</td>
+            <td>{{ s.notes }}</td>
+
+            <td>
+                {% if s.status == 'done' %}
+                    <span class="badge badge-done">DONE</span>
+                {% else %}
+                    <span class="badge badge-scheduled">SCHEDULED</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <div class="actions">
+                    <a class="btn btn-edit" href="/schedule/{{ s.id }}/edit">Edit</a>
+
+                    {% if s.status != 'done' %}
+                    <form class="inline-form" method="POST" action="/schedule/{{ s.id }}/done"
+                          onsubmit="return confirm('Mark this schedule as DONE? It will disappear from the client app.')">
+                        <button class="btn btn-done" type="submit">Done</button>
+                    </form>
+                    {% endif %}
+
+                    <form class="inline-form" method="POST" action="/schedule/{{ s.id }}/delete"
+                          onsubmit="return confirm('Delete this schedule permanently?')">
+                        <button class="btn btn-delete" type="submit">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+</body>
+</html>

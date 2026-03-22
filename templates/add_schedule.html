@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Schedule</title>
+
+  <style>
+    :root{
+      --green:#1b5e20;
+      --green2:#2e7d32;
+      --bg:#f4f6f9;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --shadow: 0 10px 25px rgba(0,0,0,.10);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+    }
+
+    /* Sidebar (same vibe as dashboard) */
+    .sidebar{
+      width:240px;
+      height:100vh;
+      background:var(--green);
+      color:#fff;
+      position:fixed;
+      padding-top:20px;
+    }
+    .sidebar h2{ text-align:center; margin:10px 0 20px; }
+    .sidebar a{
+      display:block;
+      padding:15px;
+      color:#fff;
+      text-decoration:none;
+      transition:.2s;
+    }
+    .sidebar a:hover{ background:var(--green2); }
+
+    /* Content area */
+    .main{
+      margin-left:240px;
+      padding:24px;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* Layout card */
+    .layout{
+      width:min(1100px, 96%);
+      background:var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-columns: 420px 1fr;
+    }
+
+    /* Left panel */
+    .left{
+      background:var(--green);
+      padding:28px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:flex-start;
+      gap:18px;
+      position:relative;
+    }
+    .left h1{
+      margin:0;
+      color:#fff;
+      font-size:34px;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    .left p{
+      margin:0;
+      color:rgba(255,255,255,.85);
+      font-size:14px;
+      max-width: 320px;
+    }
+    .left .imgWrap{
+      width:100%;
+      background: rgba(255,255,255,.08);
+      border-radius: 22px;
+      padding:18px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    .left img{
+      width:100%;
+      max-width:330px;
+      height:auto;
+      display:block;
+      border-radius:16px;
+    }
+
+    /* Right panel form */
+    .right{
+      padding:30px 32px;
+    }
+
+    .topRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .topRow h2{
+      margin:0;
+      font-size:22px;
+      color:#111827;
+    }
+
+    .hint{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    form{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px 14px;
+    }
+
+    .full{ grid-column: 1 / -1; }
+
+    label{
+      display:block;
+      font-size:13px;
+      color:#111827;
+      margin-bottom:6px;
+      font-weight:bold;
+    }
+
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color: var(--green2);
+      box-shadow: 0 0 0 3px rgba(46,125,50,.15);
+    }
+
+    textarea{
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .btnRow{
+      grid-column: 1 / -1;
+      display:flex;
+      gap:12px;
+      justify-content:flex-end;
+      margin-top:6px;
+    }
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:bold;
+      font-size:14px;
+    }
+
+    .btnPrimary{
+      background: var(--green2);
+      color:#fff;
+    }
+    .btnPrimary:hover{ filter: brightness(.95); }
+
+    .btnGhost{
+      background:#eef2f7;
+      color:#111827;
+    }
+    .btnGhost:hover{ filter: brightness(.98); }
+
+    /* Mobile */
+    @media (max-width: 980px){
+      .layout{
+        grid-template-columns: 1fr;
+      }
+      .left{
+        align-items:center;
+        text-align:center;
+      }
+      .left p{ max-width:none; }
+      form{ grid-template-columns: 1fr; }
+      .main{ padding:16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Waste Collection Management System</h2>
+
+    <a href="/dashboard">Dashboard</a>
+    <a href="/add_schedule">Add Schedule</a>
+    <a href="/announcements">Send Announcement</a>
+    <a href="/manage_residents">Residents</a>
+    <a href="/manage_admin">Admin</a>
+    <a href="/logout">Logout</a>
+</div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="layout">
+
+      <!-- Left Panel -->
+      <div class="left">
+        <h1>Add Waste<br/>Collection Schedule</h1>
+        <p>Fill in the details below to publish a new schedule. Residents will see this on their mobile app.</p>
+
+        <div class="imgWrap">
+          <img src="{{ url_for('static', filename='images/Schedule.png') }}" alt="Schedule image">
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div class="right">
+        <div class="topRow">
+          <h2>Schedule Details</h2>
+          <div class="hint">All fields with * are required</div>
+        </div>
+
+        <form method="POST" action="/add_schedule">
+          <!-- Barangay -->
+          <div class="full">
+            <label>Barangay *</label>
+            <select name="barangay_id" required>
+              <option value="" disabled selected>Select Barangay</option>
+              {% for b in barangays %}
+                <option value="{{ b.id }}">{{ b.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Date -->
+          <div>
+            <label>Collection Date *</label>
+            <input type="date" name="collection_date" required />
+          </div>
+
+          <!-- Time -->
+          <div>
+            <label>Collection Time *</label>
+            <input type="time" name="collection_time" required />
+          </div>
+
+          <!-- Waste Type -->
+          <div class="full">
+            <label>Waste Type</label>
+            <select name="waste_type">
+              <option value="household" selected>Household</option>
+              <option value="biodegradable">Biodegradable</option>
+              <option value="non-biodegradable">Non-biodegradable</option>
+              <option value="recyclable">Recyclable</option>
+              <option value="mixed">Mixed</option>
+            </select>
+          </div>
+
+          <!-- Notes -->
+          <div class="full">
+            <label>Notes (Optional)</label>
+            <textarea name="notes" placeholder="Example: Prepare your waste before 8:00 AM"></textarea>
+          </div>
+
+          <!-- Buttons -->
+          <div class="btnRow">
+            <button type="button" class="btn btnGhost" onclick="window.location.href='/dashboard'">
+              Cancel
+            </button>
+            <button type="submit" class="btn btnPrimary">
+              Save Schedule
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
